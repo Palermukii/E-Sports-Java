@@ -11,14 +11,17 @@ public class Principal {
 		String[][] equipos = new String[N_EQUIPOS_MAX][CANT_ATRIBUTOS];
 		Scanner s = new Scanner(System.in);
 		int cantEquipos = 0;
-		mostrarMenuYElegirOpcion(s);
+
+		int opc = 0;
+		do {
+			opc = mostrarMenuYElegirOpcion(s);
+			cantEquipos = generarAccion(s,opc,equipos, cantEquipos, ID_MIN, ID_MAX);
+		} while(opc != 11);
 	}
 
 	private static int ingresarEntero(final int MAX, final int MIN, Scanner s) {
         int nro =0;
-		
         boolean error = false;
-    
         do{
 			error = false;
             try {
@@ -37,7 +40,6 @@ public class Principal {
             } finally{
                 s.nextLine();
             }
-
         }while(error);
         return nro;
 	}
@@ -62,18 +64,20 @@ public class Principal {
 		switch(OPC){
 			case 1:
 				if(cantEquipos < EQUIPOS.length) {
-					cantEquipos = ingresarEquipo(s,EQUIPOSM, cantEquipos, )
+					cantEquipos = ingresarEquipo(s,EQUIPOS, cantEquipos, ID_MIN, ID_MAX);
 				}
 		}
+		return cantEquipos;
 	}
 
 	public static int ingresarEquipo(Scanner s, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX) {
-
+		System.out.println("aaa");
+		return ++cantEquipos;
 	}
 
-	public static int validarId(equipos[][]){
+	//public static int validarId(equipos[][]){
 		
-	}
+	//}
 
 	
 
@@ -85,15 +89,3 @@ public class Principal {
 
 
 
-
-//1 Registrar equipo
-//2 Consultar equipo
-//3 Modificar equipo
-//4 Eliminar equipo
-//5 Listar todos los equipos
-//6 Registrar resultado de partido
-//7 Buscar equipos por videojuego
-//8 Buscar equipos por país
-//9 Ver tabla de posiciones
-//10 Calcular estadísticas del torneo
-//11 Salir

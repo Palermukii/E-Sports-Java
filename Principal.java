@@ -6,12 +6,12 @@ public class Principal {
 
 	public static void main(String[] args) {
 		final int N_EQUIPOS_MAX = 15, CANT_ATRIBUTOS = 8;
-		final int ID_MIN = 0;
-		final int ID_MAX = 1000;
+		final int ID_MIN = 10;
+		final int ID_MAX = 8000;
 		String[][] equipos = new String[N_EQUIPOS_MAX][CANT_ATRIBUTOS];
 		Scanner s = new Scanner(System.in);
 		int cantEquipos = 0;
-
+		
 		int opc = 0;
 		do {
 			opc = mostrarMenuYElegirOpcion(s);
@@ -75,15 +75,26 @@ public class Principal {
 		return ++cantEquipos;
 	}
 
-	//public static int validarId(equipos[][]){
+	public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final int ID_EQUIPO_CONSULTADO, final int ID_MIN, final int ID_MAX){
+		System.out.println("Ingrese la id del equipo del cual quiere consultar los datos");
 		
-	//}
+
+	}
+
+	public static int validarId(Scanner s, final int ID_MAX, final int ID_MIN){
+		int id = s.nextInt();
+		if (id < ID_MIN || id > ID_MAX) {
+			System.out.println("La id no es valida ,ingrese una entre"+ ID_MIN + " y " + ID_MAX);
+		}else{
+			return id;
+		}
+	}
 
 	
 
-
-	
 }
+
+
 
 
 

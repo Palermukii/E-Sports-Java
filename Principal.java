@@ -1,3 +1,4 @@
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -66,12 +67,16 @@ public class Principal {
 				if(cantEquipos < EQUIPOS.length) {
 					cantEquipos = ingresarEquipo(s,EQUIPOS, cantEquipos, ID_MIN, ID_MAX);
 				}
+				break;
+			case 2:
+
+			break;
 		}
 		return cantEquipos;
 	}
 
 	public static int ingresarEquipo(Scanner s, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX) {
-		System.out.println("aaa");
+		System.out.println("Ingrese el equipo y sus datos");
 		return ++cantEquipos;
 	}
 
@@ -82,21 +87,10 @@ public class Principal {
 	}
 
 	public static int validarId(Scanner s, final int ID_MAX, final int ID_MIN){
-		int id = s.nextInt();
-		if (id < ID_MIN || id > ID_MAX) {
-			System.out.println("La id no es valida ,ingrese una entre"+ ID_MIN + " y " + ID_MAX);
-		}else{
-			return id;
-		}
+		int id = ingresarEntero(ID_MAX, ID_MIN, s);
+		return id;
 	}
 
 	
 
 }
-
-
-
-
-
-
-

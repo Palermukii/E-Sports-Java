@@ -279,6 +279,11 @@ public class Principal{
 		}
 		return ratio;
 	}
+	
+	private static void modificarEquipo(Scanner s, String[][] EQUIPOS,final int cantEquipos, int idEquipo, int ID_MAX, int ID_MIN) {
+		System.out.println("Ingrese el ID del equipo que desea modificar: ");
+		idEquipo = ingresarEntero(ID_MAX, ID_MIN, s);
+		
 
 
 

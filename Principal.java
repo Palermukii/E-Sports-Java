@@ -13,6 +13,8 @@ public class Principal{
 		final int MAX_JUEGOS = 7, MIN_JUEGOS = 1;
 		final String[] VIDEOJUEGOS = new String[]{"League Of Legends", "Counter Strike", "Dota 2", "Valorant", "Fortnite", "FIFA", "Otros" };
 		String[][] equipos = new String[N_EQUIPOS_MAX][CANT_ATRIBUTOS];
+		final int MAX_JUGADORES = 10;
+		final int MIN_JUGADORES = 1;
 		
 		Scanner s = new Scanner(System.in);
 		int cantEquipos = 0;
@@ -20,7 +22,7 @@ public class Principal{
 		int opc = 0;
 		do {
 			opc = mostrarMenuYElegirOpcion(s);
-			cantEquipos = generarAccion(s,opc,equipos, cantEquipos, ID_MIN, ID_MAX, VIDEOJUEGOS,MAX_JUEGOS, MIN_JUEGOS);
+			cantEquipos = generarAccion(s,opc,equipos, cantEquipos, ID_MIN, ID_MAX, VIDEOJUEGOS,MAX_JUEGOS, MIN_JUEGOS, MAX_JUGADORES, MIN_JUGADORES);
 		} while(opc != 11);
 	}
 
@@ -66,7 +68,6 @@ public class Principal{
 
 		// PAIS
 		String pais;
-		boolean validezPais;
 		
 			System.out.println("Ingrese el pais de origen de su equipo");
 			pais = ingresarCadena(s);
@@ -118,7 +119,7 @@ public class Principal{
 		return ingresarEntero(11,1,s);
 	}
 
-	public static int generarAccion(Scanner s, final int OPC, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX, final String[] VIDEOJUEGOS, final int MAX_JUEGOS, final int MIN_JUEGOS) {
+	public static int generarAccion(Scanner s, final int OPC, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX, final String[] VIDEOJUEGOS, final int MAX_JUEGOS, final int MIN_JUEGOS, final int MAX_JUGADORES, final int MIN_JUGADORES) {
 		switch(OPC){
 			case 1:
 				if(cantEquipos < EQUIPOS.length) {
@@ -127,6 +128,9 @@ public class Principal{
 			break;
 			case 2:
 				consultarEquipo(s,EQUIPOS, cantEquipos, ID_MAX, ID_MIN, VIDEOJUEGOS);
+			break;
+			case 3:
+				modificarEquipo(s,EQUIPOS,cantEquipos,ID_MAX, ID_MIN, MAX_JUEGOS, MIN_JUEGOS, VIDEOJUEGOS, MAX_JUGADORES, MIN_JUGADORES);
 			break;
 			case 5: // CONSULTAR TODOS LOS EQUIPOS
 				System.out.println("Los equipos registrados son: ");
@@ -149,7 +153,7 @@ public class Principal{
 	public static int buscarEquipo(final String[][] EQUIPOS, final int BUSCADO, final int LONGITUD) {
 		int i = 0;
 		while(i<LONGITUD) {
-			if(Integer.parseInt(EQUIPOS[i][0]) == BUSCADO) { //indice 0 = id. Busca por gigante de hierro
+			if(Integer.parseInt(EQUIPOS[i][0]) == BUSCADO) { //indice 0 = id. Busca por id
 				return i;
 			}
 			i++;
@@ -167,12 +171,18 @@ public class Principal{
 		return -1;
 	}
 
-	public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final int N_EQUIPOS_MAX, int ID_MAX, int ID_MIN, final String[] VIDEOJUEGOS) {
+public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final int N_EQUIPOS_MAX, int ID_MAX, int ID_MIN, final String[] VIDEOJUEGOS) {
 		System.out.println("Ingrese la id del equipo del cual quiere consultar los datos");
 		final int INDICE;
 		final int CONSULTADO;
 		CONSULTADO = ingresarEntero(ID_MAX, ID_MIN, s);
 		INDICE=buscarEquipo(EQUIPOS, CONSULTADO, N_EQUIPOS_MAX);
+
+		if(INDICE == -1) {
+			System.out.println("Ese equipo no existe");
+			return;
+		}
+
 		mostrarDatoEquipo(EQUIPOS, INDICE, VIDEOJUEGOS);
 		
 
@@ -280,15 +290,91 @@ public class Principal{
 		return ratio;
 	}
 	
-	private static void modificarEquipo(Scanner s, String[][] EQUIPOS,final int cantEquipos, int idEquipo, int ID_MAX, int ID_MIN) {
+	private static void modificarEquipo(Scanner s, String[][] EQUIPOS, int cantEquipos, final int ID_MAX, final int ID_MIN, final int MAX_JUEGOS,  final int MIN_JUEGOS, final String[] VIDEOJUEGOS, final int MAX_JUGADORES, final int MIN_JUGADORES) {
 		System.out.println("Ingrese el ID del equipo que desea modificar: ");
-		idEquipo = ingresarEntero(ID_MAX, ID_MIN, s);
-		
+		int idEquipo = ingresarEntero(ID_MAX, ID_MIN, s);
+		int indice = buscarEquipo(EQUIPOS, idEquipo, cantEquipos);
+
+		if(indice == -1) {
+			System.out.println("Ese equipo no existe");
+		}
+
+		System.out.println("Elija el atributo que desea modificar: ");
+		System.out.println("1. Id");
+		System.out.println("2. Nombre");
+		System.out.println("3. Videojuego");
+		System.out.println("4. Pais");
+		System.out.println("5. Número de jugadores");
+		System.out.println("6. Partidos ganados");
+		System.out.println("7. Partidos perdidos");
+		int opcion = ingresarEntero(MAX_JUEGOS,MIN_JUEGOS,s);
+
+		switch(opcion) {
+			case 1:
+				System.out.println("Ingrese el nuevo ID del equipo: ");
+				int nuevoId;
+				do {
+				nuevoId = ingresarEntero(ID_MAX,ID_MIN, s);
+				if(buscarEquipo(EQUIPOS, nuevoId, cantEquipos) != -1) {
+					System.out.println("Este id ya esta en uso. Pruebe otro");
+				}
+				}while(buscarEquipo(EQUIPOS, nuevoId, cantEquipos) != -1 );
+				EQUIPOS[indice][0] = String.valueOf(nuevoId);
+				break;
+			case 2:
+				System.out.println("Ingrese el nuevo nombre del equipo: ");
+				String nuevoNombre;
+				do {
+				nuevoNombre = ingresarCadena(s);
+				if(buscarCadenaEnMatriz(EQUIPOS, nuevoNombre, cantEquipos, 1) != -1) {
+					System.out.println("Este nombre ya esta en uso. Pruebe otro");
+				}
+				}while(buscarCadenaEnMatriz(EQUIPOS, nuevoNombre, cantEquipos, 1) != -1);
+				EQUIPOS[indice][1] = nuevoNombre;
+				break;
+			case 3:
+				System.out.println("Ingrese el nuevo videojuego del equipo: ");
+				for(int i = 0; i<VIDEOJUEGOS.length; i++){
+					System.out.println(i + 1 + ". "+ VIDEOJUEGOS[i]);
+				}
+				int nuevoJuego = ingresarEntero(MAX_JUEGOS, MIN_JUEGOS, s);
+				EQUIPOS[indice][2] = String.valueOf(nuevoJuego);
+				break;
+			case 4: 
+				System.out.println("Ingrese el nuevo pais del equipo");
+				String nuevoPais = ingresarCadena(s);
+				EQUIPOS[indice][3]= nuevoPais;
+				break;
+			case 5:
+				System.out.println("Ingrese la cantidad nueva de jugadores");
+				int nuevaCantJugadores = ingresarEntero(MAX_JUGADORES, MIN_JUGADORES, s);
+				EQUIPOS[indice][4] = String.valueOf(nuevaCantJugadores);
+				break;
+			case 6:
+				System.out.println("Ingrese la cantidad partidos ganados");
+				int nuevaCantPartidosGanados = ingresarEntero(99, 1, s);
+				EQUIPOS[indice][5] = String.valueOf(nuevaCantPartidosGanados);
+				break;
+			case 7:
+				System.out.println("Ingrese la cantidad partidos perdidos");
+				int nuevaCantPartidosPerdidos = ingresarEntero(99, 1, s);
+				EQUIPOS[indice][5] = String.valueOf(nuevaCantPartidosPerdidos);
+				break;
+		}
+		System.out.println("Asi quedaria modificado");
+		System.out.println("------------------------");
+		mostrarDatoEquipo(EQUIPOS, indice, VIDEOJUEGOS);
 
 
 
 	
+
 
 	}
 	
-	
+
+
+
+
+
+}

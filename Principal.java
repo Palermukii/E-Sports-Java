@@ -425,10 +425,9 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 			System.out.println("Los equipos no juegan al mismo videojuego. No se puede registrar el partido.");
 			return;
 		}
-
+ K
 		int partidosGanados = Integer.parseInt(EQUIPOS[indiceGanador][5]);
-		int partidosPerdidos = Integer.parseInt(EQUIPOS[indicePerdedor][6]);
-		
+		int partidosPerdidos = Integer.parseInt(EQUIPOS[indicePerdedor][6]);	
 		EQUIPOS[indiceGanador][5] = String.valueOf(partidosGanados + 1);
 		EQUIPOS[indicePerdedor][6] = String.valueOf(partidosPerdidos + 1);
 		int puntosGanador = Integer.parseInt(EQUIPOS[indiceGanador][7]);
@@ -439,5 +438,4 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 static void imprimirGuiones(){
 	System.out.println("------------------------------------------------------------------------");
 }
-
 }

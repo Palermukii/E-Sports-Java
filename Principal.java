@@ -15,18 +15,35 @@ public class Principal{
 		String[][] equipos = new String[N_EQUIPOS_MAX][CANT_ATRIBUTOS];
 		final int MAX_JUGADORES = 10;
 		final int MIN_JUGADORES = 1;
-		
+		final boolean MODO_PRUEBA = true;
 		Scanner s = new Scanner(System.in);
 		int cantEquipos = 0;
-		
+		// Cargar datos de prueba si MODO_PRUEBA está activado
+        if (MODO_PRUEBA) {
+            cantEquipos = cargarDatosPrueba(equipos, VIDEOJUEGOS);
+        }
+
 		int opc;
 		do {
 			opc = mostrarMenuYElegirOpcion(s);
 			cantEquipos = generarAccion(s,opc,equipos, cantEquipos, ID_MIN, ID_MAX, VIDEOJUEGOS,MAX_JUEGOS, MIN_JUEGOS, MAX_JUGADORES, MIN_JUGADORES);
 		} while(opc != 11);
+
+		s.close();
+		System.out.println("Cerrando programa...");
 	}
 
-	public static int ingresarEquipo(Scanner s, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX, final String[] VIDEOJUEGOS, final int MAX_JUEGOS, final int MIN_JUEGOS) {
+	public static int cargarDatosPrueba(String[][] equipos, final String[] VIDEOJUEGOS) {
+        equipos[0] = new String[]{"101", "Team A", "1", "Argentina", "5", "10", "2", "30"};
+        equipos[1] = new String[]{"102", "Team B", "2", "Brasil", "6", "8", "4", "24"};
+        equipos[2] = new String[]{"103", "Team C", "3", "Chile", "7", "6", "6", "18"};
+        equipos[3] = new String[]{"104", "Team D", "4", "Peru", "5", "4", "8", "12"};
+        equipos[4] = new String[]{"105", "Team E", "5", "Colombia", "6", "2", "10", "6"};
+        System.out.println("Datos de prueba cargados exitosamente.");
+        return 5;
+    }
+
+	public static int ingresarEquipo(Scanner s, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX, final String[] VIDEOJUEGOS, final int MAX_JUEGOS, final int MIN_JUEGOS,final int MAX_JUGADORES, final int MIN_JUGADORES) {
 		// ID
 		int indiceIdBuscado;
 		int idEquipo = 0;
@@ -77,7 +94,7 @@ public class Principal{
 		//NUMERO DE JUGADORES
 		System.out.println("Ingrese el numero de jugadores");
 		final int NUMERO_JUGADORES;
-		final int MAX_JUGADORES =10, MIN_JUGADORES = 1;
+		
 		NUMERO_JUGADORES = ingresarEntero(MAX_JUGADORES, MIN_JUGADORES, s);
 		//PARTIDOS GANADOS
 		System.out.println("ingrese los partidos ganados");
@@ -125,7 +142,7 @@ public class Principal{
 		switch(OPC){
 			case 1:
 				if(cantEquipos < EQUIPOS.length) {
-					cantEquipos = ingresarEquipo(s,EQUIPOS, cantEquipos, ID_MIN, ID_MAX, VIDEOJUEGOS, MAX_JUEGOS, MIN_JUEGOS);
+					cantEquipos = ingresarEquipo(s,EQUIPOS, cantEquipos, ID_MIN, ID_MAX, VIDEOJUEGOS, MAX_JUEGOS, MIN_JUEGOS, MAX_JUGADORES, MIN_JUGADORES);
 				}
 			break;
 			case 2:
@@ -155,6 +172,12 @@ public class Principal{
 			case 8:
 			buscarPorPais(s, EQUIPOS, VIDEOJUEGOS, cantEquipos);
 			break;
+			case 9:
+			mostrarTablaPosiciones(EQUIPOS, cantEquipos);
+			break;
+			case 10:
+			calcularEstadisticas(EQUIPOS, cantEquipos,VIDEOJUEGOS);
+			break;
 		}
 		return cantEquipos;
 	}
@@ -176,7 +199,7 @@ public class Principal{
 	public static int buscarCadenaEnMatriz(final String[][] EQUIPOS, final String BUSCADO, final int LONGITUD, final int IND_COL) {
 		int i = 0;
 		while(i<LONGITUD) {
-			if(EQUIPOS[i][IND_COL].toLowerCase().equals(BUSCADO.toLowerCase())) {
+			if(EQUIPOS[i][IND_COL].equalsIgnoreCase(BUSCADO)) {
 				return i;
 			}
 			i++;
@@ -248,23 +271,34 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 			System.out.println(i + 1 + ". "+ VIDEOJUEGOS[i]);
 		}
 		final int JUEGO_BUSCADO=ingresarEntero(MAX, MIN, s);
-
+		
+		boolean encontrado = false;
 		for(int i = 0; i < CANT_EQUIPOS; i++){
-
-			if(JUEGO_BUSCADO == Integer.parseInt(EQUIPOS[i][2])) {
+			if(EQUIPOS[i] != null && JUEGO_BUSCADO == Integer.parseInt(EQUIPOS[i][2])) {
 				mostrarDatoEquipo(EQUIPOS, i, VIDEOJUEGOS);
+				encontrado = true;
 			}
+		}
+
+		if(!encontrado) {
+			System.out.println("No se encontraron equipos que jueguen a " + VIDEOJUEGOS[JUEGO_BUSCADO-1]);
 		}
 	}
 	public static void buscarPorPais(Scanner s, final String[][] EQUIPOS, final String[] VIDEOJUEGOS, final int CANT_EQUIPOS) {
 		System.out.println("Ingrese el pais por el cual buscar:");
 		
 		final String PAIS_BUSCADO = ingresarCadena(s);
+
+		boolean encontrado = false;
 		for(int i = 0; i < CANT_EQUIPOS; i++){
 
-			if(PAIS_BUSCADO.toLowerCase().equals((EQUIPOS[i][3]).toLowerCase()))  {
+			if(EQUIPOS[i] != null && PAIS_BUSCADO.equalsIgnoreCase((EQUIPOS[i][3])))  {
 				mostrarDatoEquipo(EQUIPOS, i, VIDEOJUEGOS);
+				encontrado = true;
 			}
+		}
+		if(!encontrado) {
+			System.out.println("No se encontraron equipos de " + PAIS_BUSCADO);
 		}
 		
 	}
@@ -310,6 +344,7 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 
 		if(indice == -1) {
 			System.out.println("Ese equipo no existe");
+			return;
 		}
 
 		System.out.println("Elija el atributo que desea modificar: ");
@@ -320,7 +355,8 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 		System.out.println("5. Número de jugadores");
 		System.out.println("6. Partidos ganados");
 		System.out.println("7. Partidos perdidos");
-		int opcion = ingresarEntero(MAX_JUEGOS,MIN_JUEGOS,s);
+		final int OPCIONES_MODIFICACION = 7;
+		int opcion = ingresarEntero(OPCIONES_MODIFICACION,1,s);
 
 		switch(opcion) {
 			case 1:
@@ -371,17 +407,12 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 			case 7:
 				System.out.println("Ingrese la cantidad partidos perdidos");
 				int nuevaCantPartidosPerdidos = ingresarEntero(99, 1, s);
-				EQUIPOS[indice][5] = String.valueOf(nuevaCantPartidosPerdidos);
+				EQUIPOS[indice][6] = String.valueOf(nuevaCantPartidosPerdidos);
 				break;
 		}
 		System.out.println("Asi quedaria modificado");
 		imprimirGuiones();
 		mostrarDatoEquipo(EQUIPOS, indice, VIDEOJUEGOS);
-
-
-
-	
-
 
 	}
 	
@@ -420,22 +451,134 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 			return;
 		}
 		
+		if (idGanador == idPerdedor) {
+			System.out.println("Un equipo no puede jugar contra si mismo.");
+			return;
+		}
+
 		// Comprobar que jueguen al mismo juego
 		if(!EQUIPOS[indiceGanador][2].equals(EQUIPOS[indicePerdedor][2])) {
 			System.out.println("Los equipos no juegan al mismo videojuego. No se puede registrar el partido.");
 			return;
 		}
- K
+
 		int partidosGanados = Integer.parseInt(EQUIPOS[indiceGanador][5]);
-		int partidosPerdidos = Integer.parseInt(EQUIPOS[indicePerdedor][6]);	
+		int partidosPerdidos = Integer.parseInt(EQUIPOS[indicePerdedor][6]);
+		
 		EQUIPOS[indiceGanador][5] = String.valueOf(partidosGanados + 1);
 		EQUIPOS[indicePerdedor][6] = String.valueOf(partidosPerdidos + 1);
 		int puntosGanador = Integer.parseInt(EQUIPOS[indiceGanador][7]);
 		EQUIPOS[indiceGanador][7] = String.valueOf(puntosGanador + 3);
 		System.out.println("Partido registrado exitosamente");
 	}
+	
+	public static void mostrarTablaPosiciones(final String[][] EQUIPOS, final int cantEquipos) {
+		String[][] copia = new String[cantEquipos][8];
+		for(int i = 0; i<cantEquipos;i++) {
+			for(int j = 0; j < 8; j++){
+				copia[i][j] = EQUIPOS[i][j];
+			}
+		}
 
-static void imprimirGuiones(){
-	System.out.println("------------------------------------------------------------------------");
-}
+		for(int i = 0; i<cantEquipos-1;i++) {
+			for(int j = 0; j<cantEquipos-i-1;j++) {
+				int puntos1 = Integer.parseInt(copia[j][7]);
+				int puntos2 = Integer.parseInt(copia[j+1][7]);
+
+				if(puntos1 < puntos2) {
+					String[] temp = copia[j];
+					copia[j] = copia[j+1];
+					copia[j+1] = temp;
+				}
+			}
+		}
+		System.out.println("Tabla de posiciones: ");
+		for(int i = 0; i<cantEquipos;i++) {
+			System.out.println("Equipo: " + copia[i][1] + " - Puntos: " + copia[i][7]);
+		}
+		
+
+	}
+
+	public static void calcularEstadisticas(final String[][] EQUIPOS, int cantEquipos, final String[] VIDEOJUEGOS) {
+		if(cantEquipos == 0) {
+			System.out.println("No hay equipos registrados para calcular estadísticas.");
+			return;
+		}
+		// Variables para estadísticas
+		int[] equiposPorVideojuego = new int[VIDEOJUEGOS.length];
+		String[] paises = new String[cantEquipos];
+		int[] equiposPorPais = new int[cantEquipos];
+		int totalVictorias = 0;
+		int totalJugadores = 0;
+		float mejorRatio = -1;
+		float peorRatio = Float.MAX_VALUE;
+		String equipoMejorRatio = "";
+		String equipoPeorRatio = "";
+		int paisCount = 0;
+
+		for(int i = 0; i < cantEquipos; i++) {
+			if(EQUIPOS[i] != null) {
+				int videojuegoIndex = Integer.parseInt(EQUIPOS[i][2]) - 1;
+				equiposPorVideojuego[videojuegoIndex]++;
+
+				String pais = EQUIPOS[i][3];
+				boolean paisEncontrado = false;
+				for(int j = 0; j < paisCount; j++) {
+					if(paises[j].equalsIgnoreCase(pais)) {
+						equiposPorPais[j]++;
+						paisEncontrado = true;
+						break; // Buen uso del break en un if
+					}
+				}
+				if(!paisEncontrado) {
+					paises[paisCount] = pais;
+					equiposPorPais[paisCount] = 1;
+					paisCount++;
+				}
+				// Calcular total de victorias
+				int victorias= Integer.parseInt(EQUIPOS[i][5]);
+				totalVictorias += victorias;
+				
+				// Promedio numero de jugadores
+				totalJugadores += Integer.parseInt(EQUIPOS[i][4]);
+
+				// Calcular mejor y peor ratio
+				int derrotas = Integer.parseInt(EQUIPOS[i][6]);
+				float ratio = calcularRatio(victorias, derrotas);
+				if(ratio > mejorRatio) {
+					mejorRatio = ratio;
+					equipoMejorRatio = EQUIPOS[i][1];
+				}
+				if(ratio < peorRatio) {
+					peorRatio = ratio;
+					equipoPeorRatio = EQUIPOS[i][1];
+				}
+			}
+		}
+		// Mostrar estadísticas
+		System.out.println("Estadísticas del torneo:");
+		System.out.println("Porcentaje de equipos por videojuego:");
+		for (int i = 0; i < VIDEOJUEGOS.length; i++) {
+			float porcentaje = (equiposPorVideojuego[i] / (float) cantEquipos) * 100;
+			System.out.printf("%s: %.2f%%\n", VIDEOJUEGOS[i], porcentaje);
+		}
+	
+		System.out.println("\nPorcentaje de equipos por país:");
+		for (int i = 0; i < paisCount; i++) {
+			float porcentaje = (equiposPorPais[i] / (float) cantEquipos) * 100;
+			System.out.printf("%s: %.2f%%\n", paises[i], porcentaje);
+		}
+	
+		System.out.printf("\nPromedio de victorias: %.2f\n", totalVictorias / (float) cantEquipos);
+		System.out.printf("Promedio de jugadores por equipo: %.2f\n", totalJugadores / (float) cantEquipos);
+		System.out.printf("Equipo con mejor ratio de victorias/derrotas: %s (%.2f)\n", equipoMejorRatio, mejorRatio);
+		System.out.printf("Equipo con peor ratio de victorias/derrotas: %s (%.2f)\n", equipoPeorRatio, peorRatio);
+		}
+
+
+	public static void imprimirGuiones(){
+		System.out.println("------------------------------------------------------------------------");
+	}
+
 }

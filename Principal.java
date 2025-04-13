@@ -7,41 +7,53 @@ import java.util.Scanner;
 public class Principal{
 
 	public static void main(String[] args) {
-		//VARIABLES GLOBALES
+		//CONSTANTES
 		final int N_EQUIPOS_MAX = 15, CANT_ATRIBUTOS = 8;
-		final int ID_MIN = 10;
-		final int ID_MAX = 8000;
-		final int MAX_JUEGOS = 7, MIN_JUEGOS = 1;
+		final int ID_MIN = 10, ID_MAX = 8000;
+		final int MIN_JUEGOS = 1, MAX_JUEGOS = 7;
 		final String[] VIDEOJUEGOS = new String[]{"League Of Legends", "Counter Strike", "Dota 2", "Valorant", "Fortnite", "FIFA", "Otros" };
-		String[][] equipos = new String[N_EQUIPOS_MAX][CANT_ATRIBUTOS];
-		final int MAX_JUGADORES = 10;
-		final int MIN_JUGADORES = 1;
-		final boolean MODO_PRUEBA = false;
+		final String[][] EQUIPOS = new String[N_EQUIPOS_MAX][CANT_ATRIBUTOS];
+		final int MIN_JUGADORES = 1, MAX_JUGADORES = 10;
+		final boolean MODO_PRUEBA = true;
+
 		Scanner s = new Scanner(System.in);
 		int cantEquipos = 0;
 		// CARGAR DATOS DE PRUEBA SI MODO_PRUEBA ESTA ACTIVADO
         if (MODO_PRUEBA) {
-            cantEquipos = cargarDatosPrueba(equipos, VIDEOJUEGOS);
+            cantEquipos = cargarDatosPrueba(EQUIPOS, VIDEOJUEGOS);
         }
 
 		int opc;
 		do {
 			opc = mostrarMenuYElegirOpcion(s);
-			cantEquipos = generarAccion(s,opc,equipos, cantEquipos, ID_MIN, ID_MAX, VIDEOJUEGOS,MAX_JUEGOS, MIN_JUEGOS, MAX_JUGADORES, MIN_JUGADORES);
+			cantEquipos = generarAccion(s,opc,EQUIPOS, cantEquipos, ID_MIN, ID_MAX, VIDEOJUEGOS,MAX_JUEGOS, MIN_JUEGOS, MAX_JUGADORES, MIN_JUGADORES);
 		} while(opc != 11);
 
 		s.close();
 		System.out.println("Cerrando programa...");
 	}
-		//DATOS PARA HACER PRUEBAS Y NO INGRESAR MANUALMENTE LOS MISMOS
-	public static int cargarDatosPrueba(String[][] equipos, final String[] VIDEOJUEGOS) {
-        equipos[0] = new String[]{"101", "Team A", "1", "Argentina", "5", "10", "2", "30"};
-        equipos[1] = new String[]{"102", "Team B", "2", "Brasil", "6", "8", "4", "24"};
-        equipos[2] = new String[]{"103", "Team C", "3", "Chile", "7", "6", "6", "18"};
-        equipos[3] = new String[]{"104", "Team D", "4", "Peru", "5", "4", "8", "12"};
-        equipos[4] = new String[]{"105", "Team E", "5", "Colombia", "6", "2", "10", "6"};
+
+
+	//DATOS PARA HACER PRUEBAS Y NO INGRESAR MANUALMENTE LOS MISMOS
+	public static int cargarDatosPrueba(String[][] EQUIPOS, final String[] VIDEOJUEGOS) {
+        EQUIPOS[0] = new String[]{"101", "Team A", "1", "Argentina", "5", "10", "2", "30"};
+    	EQUIPOS[1] = new String[]{"102", "Team B", "2", "Brasil", "6", "8", "4", "24"};
+    	EQUIPOS[2] = new String[]{"103", "Team C", "3", "Chile", "7", "6", "6", "18"};
+    	EQUIPOS[3] = new String[]{"104", "Team D", "4", "Peru", "5", "4", "8", "12"};
+    	EQUIPOS[4] = new String[]{"105", "Team E", "5", "Colombia", "6", "2", "10", "6"};
+    	EQUIPOS[5] = new String[]{"106", "Team F", "6", "Mexico", "8", "12", "3", "36"};
+    	EQUIPOS[6] = new String[]{"107", "Team G", "7", "USA", "9", "15", "1", "45"};
+    	EQUIPOS[7] = new String[]{"108", "Team H", "1", "Canada", "4", "7", "5", "21"};
+    	EQUIPOS[8] = new String[]{"109", "Team I", "2", "Spain", "5", "9", "4", "27"};
+    	EQUIPOS[9] = new String[]{"110", "Team J", "3", "France", "6", "11", "3", "33"};
+    	EQUIPOS[10] = new String[]{"111", "Team K", "4", "Germany", "7", "13", "2", "39"};
+    	EQUIPOS[11] = new String[]{"112", "Team L", "5", "Italy", "8", "14", "1", "42"};
+    	EQUIPOS[12] = new String[]{"113", "Team M", "6", "Japan", "5", "10", "3", "30"};
+    	EQUIPOS[13] = new String[]{"114", "Team N", "7", "South Korea", "6", "12", "2", "36"};
+    	EQUIPOS[14] = new String[]{"115", "Team O", "1", "Australia", "4", "8", "4", "24"};
+
         System.out.println("Datos de prueba cargados exitosamente.");
-        return 5;
+        return 15;
     }
 
 	public static int ingresarEquipo(Scanner s, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX, final String[] VIDEOJUEGOS, final int MAX_JUEGOS, final int MIN_JUEGOS,final int MAX_JUGADORES, final int MIN_JUGADORES) {
@@ -51,7 +63,7 @@ public class Principal{
 		do {
 			System.out.println("Ingrese el ID del equipo: ");
 			idEquipo = ingresarEntero(ID_MAX, ID_MIN, s);
-			indiceIdBuscado = buscarEquipo(EQUIPOS, idEquipo, cantEquipos);
+			indiceIdBuscado = buscarEquipo(EQUIPOS, idEquipo, cantEquipos); // Si devuelve -1, se puede usar
 
 			if(indiceIdBuscado >= 0) {
 				System.out.println("Esta id del equipo ya fue asignado a otro. Por favor, ingrese nuevamente");
@@ -64,7 +76,7 @@ public class Principal{
 		do {
 			System.out.println("Ingrese el nombre del equipo");
 			nombreEquipo = ingresarCadena(s);
-			indiceNombreBuscado = buscarCadenaEnMatriz(EQUIPOS,nombreEquipo,cantEquipos,1);
+			indiceNombreBuscado = buscarCadenaEnMatriz(EQUIPOS,nombreEquipo,cantEquipos,1); // Busca que no se repita, si devuelve -1 se puede usar, si devuelve un numero, ya existe
 
 			if(indiceNombreBuscado >= 0) {
 				System.out.println("Este nombre de equipo ya fue asignado a otro. Por favor, ingrese uno nuevo: ");
@@ -149,6 +161,9 @@ public class Principal{
 				if(cantEquipos < EQUIPOS.length) {
 					cantEquipos = ingresarEquipo(s,EQUIPOS, cantEquipos, ID_MIN, ID_MAX, VIDEOJUEGOS, MAX_JUEGOS, MIN_JUEGOS, MAX_JUGADORES, MIN_JUGADORES);
 				}
+				else {
+					System.out.println("No se pueden agregar más equipos. Límite alcanzado.");
+				}
 			break;
 		//OPCION PARA CONSULTAR UN EQUIPO
 			case 2:
@@ -160,7 +175,7 @@ public class Principal{
 			break;
 		//OPCION PARA ELIMINAR UN EQUIPO
 			case 4:
-				eliminarEquipo(s, EQUIPOS, cantEquipos, ID_MIN, ID_MAX);
+				cantEquipos = eliminarEquipo(s, EQUIPOS, cantEquipos, ID_MIN, ID_MAX);
 			break;
 		//OPCION PARA LISTAR TODOS LOS EQUIPOS
 			case 5: 
@@ -194,7 +209,7 @@ public class Principal{
 	public static int buscarEquipo(final String[][] EQUIPOS, final int BUSCADO, final int LONGITUD) {
 		int i = 0;
 		while(i < LONGITUD) {
-			if(EQUIPOS[i] == null) {
+			if(EQUIPOS[i] == null) { // Si es null, se puede sobreescribir
 				return -1;
 			}
 			if(Integer.parseInt(EQUIPOS[i][0]) == BUSCADO) { //INDICE 0 = ID, BUSCA POR ID
@@ -215,7 +230,7 @@ public class Principal{
 		return -1;
 	}
 
-public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final int N_EQUIPOS_MAX, int ID_MAX, int ID_MIN, final String[] VIDEOJUEGOS) {
+	public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final int N_EQUIPOS_MAX, int ID_MAX, int ID_MIN, final String[] VIDEOJUEGOS) {
 		System.out.println("Ingrese la id del equipo del cual quiere consultar los datos");
 		final int INDICE;
 		final int CONSULTADO;
@@ -228,7 +243,6 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 		}
 
 		mostrarDatoEquipo(EQUIPOS, INDICE, VIDEOJUEGOS);
-		
 
 	}
 	public static void mostrarDatoEquipo(final String[][] EQUIPOS, final int INDICE, final String[] VIDEOJUEGOS) {
@@ -259,7 +273,7 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
                 }
 
                
-                else if (cadena.matches("\\d+")) {
+                else if (cadena.matches("\\d+")) { // \\d es una expresion regular que se usa para verificar si la cadena contiene SOLO digitos (0 al 9)
                     error = true;
                     System.out.println("Error: La cadena no puede ser solo números. Ingrese otra cadena.");
                 }
@@ -336,7 +350,7 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
         }while(error);
         return nro;
 	}
-	public static float calcularRatio(int partidosGanados, int partidosPerdidos){
+	private static float calcularRatio(int partidosGanados, int partidosPerdidos){
 		float ratio;
 		ratio = ((float) partidosGanados)/ partidosPerdidos; //FORMULA RATIO
 		if (partidosPerdidos == 0) {
@@ -432,7 +446,7 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 	}
 	
 
-	public static int eliminarEquipo(Scanner s, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX) {
+	private static int eliminarEquipo(Scanner s, final String[][] EQUIPOS, int cantEquipos, final int ID_MIN, final int ID_MAX) {
 		System.out.println("Ingrese el id del equipo a eliminar: ");
 		int idBuscado = ingresarEntero(ID_MAX,ID_MIN,s);
 		final int idEquipo = buscarEquipo(EQUIPOS, idBuscado, cantEquipos);
@@ -442,7 +456,7 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 			for (int i = idEquipo; i < cantEquipos-1; i++) {
 				EQUIPOS[i] = EQUIPOS[i+1];
 			}
-			EQUIPOS[cantEquipos-1] = null; //LIMPIAR LA ULTIMA POSICION
+			EQUIPOS[cantEquipos-1] = new String[8]; //LIMPIAR LA ULTIMA POSICION
 			System.out.println("Equipo eliminado exitosamente");
 			cantEquipos--;
 		}
@@ -450,7 +464,7 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 		return cantEquipos;
 	}
 
-	public static void registrarPartido(final String[][] EQUIPOS, final int CANT_EQUIPOS, Scanner s) {
+	private static void registrarPartido(final String[][] EQUIPOS, final int CANT_EQUIPOS, Scanner s) {
 		System.out.println("Ingrese el id del equipo que ganó el partido: ");
 		//VARIABLES PARA REGISTRAR PARTIDO
 		int idGanador = ingresarEntero(8000, 10, s);
@@ -488,7 +502,7 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 		System.out.println("Partido registrado exitosamente");
 	}
 	
-	public static void mostrarTablaPosiciones(final String[][] EQUIPOS, final int cantEquipos) {
+	private static void mostrarTablaPosiciones(final String[][] EQUIPOS, final int cantEquipos) {
 		String[][] copia = new String[cantEquipos][8];
 		//IMPRIMIR LA TABLA
 		for(int i = 0; i < cantEquipos; i++) {
@@ -511,13 +525,13 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 		}
 		System.out.println("Tabla de posiciones: ");
 		for(int i = 0; i < cantEquipos; i++) {
-			System.out.println("Equipo: " + copia[i][1] + " - Puntos: " + copia[i][7]);
+			System.out.println((i+1) + ". Equipo: " + copia[i][1] + " - Puntos: " + copia[i][7]);
 		}
 		
 
 	}
 
-	public static void calcularEstadisticas(final String[][] EQUIPOS, int cantEquipos, final String[] VIDEOJUEGOS) {
+	private static void calcularEstadisticas(final String[][] EQUIPOS, int cantEquipos, final String[] VIDEOJUEGOS) {
 		if(cantEquipos == 0) { //VERIFICAR QUE HAYA ALGUN EQUIPO REGISTRADO
 			System.out.println("No hay equipos registrados para calcular estadísticas.");
 			return;
@@ -593,7 +607,7 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 		System.out.printf("Equipo con peor ratio de victorias/derrotas: %s (%.2f)\n", equipoPeorRatio, peorRatio);
 		}
 
-		public static void listarEquipos(final String[][] EQUIPOS, int cantEquipos, final String[] VIDEOJUEGOS) {
+		private static void listarEquipos(final String[][] EQUIPOS, int cantEquipos, final String[] VIDEOJUEGOS) {
 			if(cantEquipos == 0) { //VERIFICAR SI HAY EQUIPOS REGISTRADOS
 				System.out.println("No hay equipos registrados.");
 				imprimirGuiones(); 
@@ -610,8 +624,8 @@ public static void consultarEquipo(Scanner s, final String[][] EQUIPOS, final in
 		}
 
 	
-	public static void imprimirGuiones(){
+		private static void imprimirGuiones(){
 		System.out.println("------------------------------------------------------------------------");
-	}
+		}
 
 }
